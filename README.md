@@ -94,3 +94,15 @@ terraform apply
 | openshift_additional_trust_bundle | Path to file containing custom certificate authority | - | string |
 | vm_name_format                    | Printf style format for naming VMs replaces 3 values in the string       | string | node-%s-%02d.%s |
 | vm_name_start                     | Number to start vm count with used in conjunction with vm_name_format    | number | 0 |
+
+### Configurations to use default cluster resource pool
+This could also be named configuring without a creating or using resource pools. The following variables must be set the following way:
+```
+vsphere_preexisting_resourcepool = true
+vsphere_resource_pool = ""
+```
+Basically we are telling the automation to use a preexisting resource pool but we are not configuring the name of the resource pool. This will force the automation to use the default resource pool for the cluster. The following line from the locals section of the **main.tf** file is making this possible.
+```
+resource_pool_id    = var.vsphere_preexisting_resourcepool ? var.vsphere_resource_pool == "" ? data.vsphere_compute_cluster.compute_cluster.resource_pool_id : data.vsphere_resource_pool.resource_pool[0].id : vsphere_resource_pool.resource_pool[0].id
+```
+
