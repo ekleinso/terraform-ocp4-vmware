@@ -106,3 +106,17 @@ Basically we are telling the automation to use a preexisting resource pool but w
 resource_pool_id    = var.vsphere_preexisting_resourcepool ? var.vsphere_resource_pool == "" ? data.vsphere_compute_cluster.compute_cluster.resource_pool_id : data.vsphere_resource_pool.resource_pool[0].id : vsphere_resource_pool.resource_pool[0].id
 ```
 
+This is the logic in if-then syntax (not Terraform)
+```
+if vsphere_preexisting_resourcepool is true then
+  if vsphere_resource_pool is blank/empty then
+    use default resource pool id for the specified cluster
+  else
+    use the resource pools specified by vsphere_resource_pool
+  endif
+else
+  create the new pool specified by vsphere_resource_pool
+endif
+```
+The automation will fail if **vsphere_preexisting_resourcepool** is false and **vsphere_resource_pool** is blank.
+
