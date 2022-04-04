@@ -143,11 +143,16 @@ spec:
 EOF
 }
 
-
 data "template_file" "chrony_config" {
-  template = templatefile("${path.module}/templates/chrony.conf", {
-    server = var.ntp_server
-  })
+  template = <<EOF
+%{ for i in var.ntp_servers ~}
+server ${i} iburst
+%{ endfor ~}
+driftfile /var/lib/chrony/drift
+makestep 1.0 3
+rtcsync
+logdir /var/log/chrony
+EOF
 }
 
 data "template_file" "chrony_config_masters" {
@@ -285,7 +290,7 @@ resource "local_file" "mtu_configuration" {
 }
 
 resource "local_file" "ntp_masters" {
-  count    = var.ntp_server == "" ? 0 : 1
+  count    = length(var.ntp_servers) > 0 ? 1 : 0
   content  = data.template_file.chrony_config_masters.rendered
   filename = "${local.installerdir}/manifests/99_master_ntp-machineconfig.yaml"
   depends_on = [
@@ -294,7 +299,7 @@ resource "local_file" "ntp_masters" {
 }
 
 resource "local_file" "ntp_workers" {
-  count    = var.ntp_server == "" ? 0 : 1
+  count    = length(var.ntp_servers) > 0 ? 1 : 0
   content  = data.template_file.chrony_config_workers.rendered
   filename = "${local.installerdir}/manifests/99_worker_ntp-machineconfig.yaml"
   depends_on = [

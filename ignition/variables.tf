@@ -108,9 +108,10 @@ variable "default_interface" {
   default = "ens192"
 }
 
-variable "ntp_server" {
-  type    = string
-  default = ""
+variable "ntp_servers" {
+  type = list
+  default = []
+  description = "List of NTP Servers"
 }
 
 variable "proxy_config" {

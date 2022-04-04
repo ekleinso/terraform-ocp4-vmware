@@ -282,6 +282,7 @@ variable "openshift_worker_mtu" {
 
 variable "openshift_ntp_server" {
   type    = string
+  description = "Comma delimited list of NTP servers"
   default = ""
 }
 

@@ -114,7 +114,7 @@ module "ignition" {
   openshift_version   = var.openshift_version
   total_node_count    = var.compute_count + var.storage_count + var.infra_count
   worker_mtu          = var.openshift_worker_mtu
-  ntp_server          = var.openshift_ntp_server
+  ntp_servers         = split(",",var.openshift_ntp_server)
   airgapped           = var.airgapped
   proxy_config        = var.proxy_config
   trust_bundle        = var.openshift_additional_trust_bundle
