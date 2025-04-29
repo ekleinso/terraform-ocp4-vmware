@@ -31,3 +31,4 @@ override.tf.json
 **/installer/*
 **/test/*
 *.tfvars
+.DS_Store
